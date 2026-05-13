@@ -70,3 +70,50 @@
   font-size: 16px;
   line-height: 150%;
 }
+
+.user-explorer__status {
+  margin: 0;
+  color: var(--text);
+}
+
+.user-explorer__error {
+  border-radius: 8px;
+  padding: 12px 14px;
+  background: color-mix(in srgb, #dc2626 12%, transparent);
+  border: 1px solid color-mix(in srgb, #dc2626 35%, transparent);
+}
+
+.user-explorer__error p {
+  margin: 0;
+  color: var(--text-h);
+  font-size: 15px;
+}
+
+.user-explorer__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.user-explorer__item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+}
+
+.user-explorer__name {
+  font-weight: 500;
+  color: var(--text-h);
+}
+
+.user-explorer__meta {
+  font-size: 15px;
+  color: var(--text);
+}
