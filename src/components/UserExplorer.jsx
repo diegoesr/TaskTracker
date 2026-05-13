@@ -1,88 +1,17 @@
-import { useEffect, useMemo, useState } from 'react'
-import {
-  fetchPostsByUserId,
-  fetchUsers,
-} from '../services/jsonPlaceholder.js'
+import { useMemo, useState } from 'react'
+import { useUserPosts } from '../hooks/useUserPosts.js'
+import { useUsers } from '../hooks/useUsers.js'
 
 export function UserExplorer() {
-  const [users, setUsers] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
-
+  const { users, loading, error } = useUsers()
   const [search, setSearch] = useState('')
   const [selectedUser, setSelectedUser] = useState(null)
 
-  const [posts, setPosts] = useState([])
-  const [postsLoading, setPostsLoading] = useState(false)
-  const [postsError, setPostsError] = useState(null)
-
-  useEffect(() => {
-    let cancelled = false
-
-    async function load() {
-      setLoading(true)
-      setError(null)
-      try {
-        const data = await fetchUsers()
-        if (!cancelled) {
-          setUsers(data)
-        }
-      } catch (e) {
-        if (!cancelled) {
-          setError(
-            e instanceof Error ? e.message : 'No se pudieron cargar los usuarios',
-          )
-        }
-      } finally {
-        if (!cancelled) {
-          setLoading(false)
-        }
-      }
-    }
-
-    load()
-    return () => {
-      cancelled = true
-    }
-  }, [])
-
-  useEffect(() => {
-    if (!selectedUser?.id) {
-      return
-    }
-
-    let cancelled = false
-
-    async function loadPosts() {
-      setPostsLoading(true)
-      setPostsError(null)
-      setPosts([])
-      try {
-        const data = await fetchPostsByUserId(selectedUser.id)
-        if (!cancelled) {
-          setPosts(data)
-        }
-      } catch (e) {
-        if (!cancelled) {
-          setPostsError(
-            e instanceof Error
-              ? e.message
-              : 'No se pudieron cargar los posts',
-          )
-          setPosts([])
-        }
-      } finally {
-        if (!cancelled) {
-          setPostsLoading(false)
-        }
-      }
-    }
-
-    loadPosts()
-    return () => {
-      cancelled = true
-    }
-  }, [selectedUser?.id])
+  const {
+    posts,
+    loading: postsLoading,
+    error: postsError,
+  } = useUserPosts(selectedUser?.id)
 
   const filteredUsers = useMemo(() => {
     const q = search.trim().toLowerCase()
@@ -230,7 +159,10 @@ export function UserExplorer() {
                 </p>
               )}
               {!postsLoading && postsError && (
-                <div className="user-explorer__error user-explorer__error--compact" role="alert">
+                <div
+                  className="user-explorer__error user-explorer__error--compact"
+                  role="alert"
+                >
                   <p>{postsError}</p>
                 </div>
               )}
@@ -247,7 +179,9 @@ export function UserExplorer() {
                 </ul>
               )}
               {!postsLoading && !postsError && posts.length === 0 && (
-                <p className="user-explorer__muted">Este usuario no tiene posts.</p>
+                <p className="user-explorer__muted">
+                  Este usuario no tiene posts.
+                </p>
               )}
             </>
           )}
